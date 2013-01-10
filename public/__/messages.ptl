@@ -1,0 +1,59 @@
+<!-- AGENT 'header' title='Syslog Viewer for Patchwork' -->
+
+<div id="content">
+
+<p>There is {d$messages} logs.
+</p>
+<!--
+
+
+INLINE widget/pagination
+	results_per_page=$results_per_page
+	results_nb=$messages
+
+-->
+	<table class="workers">
+	<thead>
+		<tr>
+			<th width="150">Date</th>
+			<th width="100">Facility</th>
+			<th width="100">Host</th>
+			<th width="100">Tag</th>
+			<th>Severity</th>
+			 <th width="*">Message</th>
+		</tr>
+	</thead>
+	<tbody>
+	<!-- LOOP d$messages -->
+	<!--
+		SET a$_syslog -->{$SysLogTag|replace:'(\[(.*)\]?|:)$':''}<!-- END:SET
+
+		SET a$_linkFacility -->messages/facility/{$Facility}<!-- END:SET
+		SET a$_linkHost     -->messages/host/{$FromHost}<!--     END:SET
+		SET a$_linkInput    -->messages/input/{a$_syslog}<!--    END:SET
+		SET a$_linkPriority -->messages/priority/{$Priority}<!-- END:SET
+
+		SET a$_classError --><!--
+			IF 0 <= $Priority && 5 >= $Priority
+				-->error<!--
+			ELSE
+				-->info<!--
+			END:IF --><!--
+		END:SET
+	-->
+		<tr class="{a$_classError}">
+			<td>{$ReceivedAt}</td>
+			<td>{linkto:$Facility:a$_linkFacility}</td>
+			<td>{linkto:$FromHost:a$_linkHost}</td>
+			<td>{linkto:a$_syslog:a$_linkInput}</td>
+			<td>{linkto:$Priority:a$_linkPriority:a$_classError}</td>
+			<td>{$Message}</td>
+		</tr>
+	<!-- END:LOOP -->
+	</table>
+	<div id="graph">
+
+	</div>
+</div>
+
+<!-- AGENT 'footer' -->

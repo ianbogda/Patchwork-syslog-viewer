@@ -1,0 +1,19 @@
+<!-- INLINE header -->
+
+<div class="header-container">
+	<header class="wrapper clearfix">
+	<h1 class="title">{$title}</h1>
+	<nav>
+		<ul>
+			<li>{'All'|linkto:'messages'}</li>
+			<li>{'Host'|linkto:'messages/host'}</li>
+			<li>{'Input'|linkto:'messages/input'}</li>
+			<li>{'Priority'|linkto:'messages/priority'}</li>
+			<li>{'Facility'|linkto:'messages/facility'}</li>
+		</ul>
+	</nav>
+	</header>
+</div>
+
+<div class="main-container">
+	<div class="main wrapper clearfix">

@@ -1,0 +1,11 @@
+	</div> <!-- #main -->
+</div><!-- #main-container -->
+
+<div class="footer-container">
+	<footer class="wrapper">
+		<p>
+		Propulsé par <a href="http://pa.tchwork.com/" target="_blank">Patchwork</a> - sources : <a href="https://github.com/ianbogda/Patchwork-syslog-viewer" target="_blank" title="sources sur github">Patchwork-Syslog-viewer</a>
+		</p>
+	</footer>
+</div>
+<!-- INLINE footer -->
