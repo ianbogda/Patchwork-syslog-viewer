@@ -1,4 +1,8 @@
-<!-- INLINE header -->
+<!--
+SET a$head -->{a$head}<script async defer src="{~}js/jquery.flot.min.js"></script><!-- END:SET
+
+INLINE header
+-->
 
 <div class="header-container">
 	<header class="wrapper clearfix">
