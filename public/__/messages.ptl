@@ -1,27 +1,25 @@
 <!-- AGENT 'header' title='Syslog Viewer for Patchwork' -->
 
 <div id="content">
+	<p>
+	{d$messages} events
+	</p>
 
-<p>There is {d$messages} logs.
-</p>
-<!--
-
-
-INLINE widget/pagination
-	results_per_page=$results_per_page
-	results_nb=$messages
-
--->
 	<table class="workers">
 	<thead>
-		<tr>
-			<th width="150">Date</th>
+		<tr><!--
+		IF g$__2__ || !g$__1__
+			--><th width="150">Date</th>
 			<th width="100">Facility</th>
 			<th width="100">Host</th>
 			<th width="100">Tag</th>
 			<th>Severity</th>
-			 <th width="*">Message</th>
-		</tr>
+			<th width="*">Message</th><!--
+		ELSE
+			--><th>{g$__1__|capitalize}</th>
+			<th>Events</th><!--
+		END:IF
+			--></tr>
 	</thead>
 	<tbody>
 	<!-- LOOP d$messages -->
@@ -40,17 +38,25 @@ INLINE widget/pagination
 				-->info<!--
 			END:IF --><!--
 		END:SET
-	-->
-		<tr class="{a$_classError}">
-			<td>{$ReceivedAt}</td>
+
+		--><tr class="{a$_classError}"><!--
+
+		IF g$__2__ || !g$__1__
+			--><td>{$ReceivedAt}</td>
 			<td>{linkto:$Facility:a$_linkFacility}</td>
 			<td>{linkto:$FromHost:a$_linkHost}</td>
 			<td>{linkto:a$_syslog:a$_linkInput}</td>
 			<td>{linkto:$Priority:a$_linkPriority:a$_classError}</td>
-			<td>{$Message}</td>
+			<td>{$Message}</td><!--
+		ELSE
+			SET $_linkSource -->{~}messages/{g$__1__}/{$source}<!-- END:SET
+			--><td>{$source|linkto:$_linkSource:$source}</td>
+			<td>{$count}</td><!--
+		END:IF -->
 		</tr>
 	<!-- END:LOOP -->
 	</table>
+
 	<div id="graph">
 
 	</div>
