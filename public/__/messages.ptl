@@ -57,7 +57,14 @@
 	<!-- END:LOOP -->
 	</table>
 
-	<div id="graph">
+	<div id="graph-wrapper">
+		<div class="graph-info">
+		</div>
+
+		<div class="graph-container">
+			<div id="graph-lines"></div>
+			<div id="graph-bar"></div>
+		</div>
 
 	</div>
 </div>
