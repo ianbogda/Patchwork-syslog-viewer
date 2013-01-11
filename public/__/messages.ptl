@@ -172,46 +172,14 @@ IF d$graphData
 		END:IF
 	END:LOOP
 
+	IF d$labels
+
 	-->
-
 	$.plot($("#graph-lines"), [ <!--
-		SET $_max   -->0<!-- END:SET
-		SET $_count -->0<!-- END:SET
-
-		LOOP d$severities
-			LOOP $$graphData
-				IF $$iteratorPosition == $data && !$$_locked
-					SET $$$_max   -->{$$$_max+1}<!-- END:SET
-					SET $$_locked -->1<!-- END:SET
-				END:IF
-			END:LOOP
-		END:LOOP
-
-		LOOP d$severities
-			SET $_data -->0<!-- END:SET
-
-			LOOP $$graphData
-				IF $$iteratorPosition == $data && !$$_locked
-					SET $$_data -->1<!-- END:SET
-				END:IF
-			END:LOOP
-
-			IF $_data
-				SET $_locked -->0<!-- END:SET
-
-				LOOP $$graphData
-					IF $$iteratorPosition == $data && !$$_locked
-						-->{ label: {$$severity|js}, data: d{$$iteratorPosition} }<!--
-
-						SET $$_locked -->1<!--             END:SET
-						SET $$$_count -->{$$$_count+1}<!-- END:SET
-
-						IF $$$_count < $$$_max
-							-->,<!--
-						END:IF
-
-					END:IF
-				END:LOOP
+		LOOP d$labels
+			-->{ label: {$labelString|js}, data: d{$labelNumeric} }<!--
+			IF $iteratorPosition < $$labels-1
+				-->,<!--
 			END:IF
 		END:LOOP
 		--> ], {
@@ -222,6 +190,7 @@ IF d$graphData
 		xaxis: { mode : "time" }
 	});<!--
 
+	END:IF
 	END:IF
 
 END:IF

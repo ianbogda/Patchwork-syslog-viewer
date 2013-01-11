@@ -98,6 +98,15 @@ class agent_messages extends agent
 					GROUP BY data, YEAR(`ReceivedAt`), MONTH(`ReceivedAt`), DAY(`ReceivedAt`)
 					ORDER BY timestamped";
 			$o->graphData = new loop_sql($sql);
+
+			if ('priority' == $this->get->__1__ || 'facility' == $this->get->__1__)
+			{
+				$sql = "SELECT {$field} AS labelNumeric
+						FROM `SystemEvents`
+						GROUP BY labelNumeric
+						ORDER BY labelNumeric";
+				$o->labels = new loop_sql($sql, array($this, 'filterLabel'));
+			}
 		}
 
 		return $o;
@@ -128,5 +137,15 @@ class agent_messages extends agent
 			$this->sqlGroupBy = "GROUP BY source";
 			$this->sqlOrderBy = "ORDER BY `source` ASC";
 		}
+	}
+
+	function filterLabel($o)
+	{
+		if ('priority' === $this->get->__1__)
+			$o->labelString = $this->severities[$o->labelNumeric]['severity'];
+		elseif ('facility' === $this->get->__1__)
+			$o->labelString = $this->facilities[$o->labelNumeric]['facility'];
+
+		return $o;
 	}
 }
