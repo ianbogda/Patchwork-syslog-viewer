@@ -63,45 +63,7 @@ class agent_messages extends agent
 	{
 		parent::control();
 
-		if ($this->get->__1__)
-		{
-			switch ($this->get->__1__)
-			{
-				case 'host'     : $this->sqlWhere  = "`FromHost`";        break;
-				case 'input'    : $this->sqlSelect = $this->sqlSysLogTag; break;
-				case 'priority' : $this->sqlWhere  = "`Priority`";        break;
-				case 'facility' : $this->sqlWhere  = "`Facility`";        break;
-			}
-
-
-			if (-1 != $this->get->__2__)
-			{
-				switch ($this->get->__1__)
-				{
-					case 'host':
-					case 'priority' :
-					case 'facility' : $this->sqlWhere .= " = '%s'";     break;
-					case 'input'    : $this->sqlWhere .= " LIKE '%s%'"; break;
-				}
-				$this->sqlWhere = str_replace('%s', $this->get->__2__, $this->sqlWhere);
-			}
-			else
-			{
-				$this->sqlWhere = 1;
-
-				switch ($this->get->__1__)
-				{
-					case 'host'     : $this->sqlSelect = "`FromHost`";        break;
-					case 'input'    : $this->sqlSelect = $this->sqlSysLogTag; break;
-					case 'priority' : $this->sqlSelect = "`Priority`";        break;
-					case 'facility' : $this->sqlSelect = "`Facility`";        break;
-				}
-
-				$this->sqlSelect .= " AS source, COUNT(*) as `count`";
-				$this->sqlGroupBy = "GROUP BY source";
-				$this->sqlOrderBy = "ORDER BY `source` ASC";
-			}
-		}
+		$this->get->__1__ && $this->prepareSql($this->get->__1__, $this->get->__2__);
 
 		0 != $this->get->p || $this->sqlLimit = $this->get->p * $this->results_per_page;
 	}
@@ -124,23 +86,47 @@ class agent_messages extends agent
 		$o->results_per_page = $this->results_per_page;
 		$o->page  = $this->get->p + 1;
 
-		switch ($this->get->__1__)
+		if ($this->get->__1__)
 		{
-			case 'host'     : $this->sqlWhere = "`FromHost`";  break;
-			case 'input'    : $this->sqlWhere = "`SysLogTag`"; break;
-			case 'priority' : $this->sqlWhere = "`Priority`";  break;
-			case 'facility' : $this->sqlWhere = "`Facility`";  break;
-		}
-		$this->sqlWhere .= " AS data,
-			COUNT({$this->sqlWhere}) as total,
-			UNIX_TIMESTAMP(`ReceivedAt`) AS timestamped";
+			$field = $this->getSqlColumn($this->get->__1__);
+			$this->sqlSelect = "{$field} AS data,
+				COUNT(" . $field . ") as total,
+				UNIX_TIMESTAMP(`ReceivedAt`) AS timestamped";
 
-		$sql = "SELECT {$this->sqlWhere}
-				FROM `SystemEvents`
-				GROUP BY data, YEAR(`ReceivedAt`), MONTH(`ReceivedAt`), DAY(`ReceivedAt`)
-				ORDER BY timestamped";
-		$o->graphData = new loop_sql($sql);
+			$sql = "SELECT {$this->sqlSelect}
+					FROM `SystemEvents`
+					GROUP BY data, YEAR(`ReceivedAt`), MONTH(`ReceivedAt`), DAY(`ReceivedAt`)
+					ORDER BY timestamped";
+			$o->graphData = new loop_sql($sql);
+		}
 
 		return $o;
+	}
+
+	protected function getSqlColumn($case)
+	{
+		switch ($case)
+		{
+			case 'host'     : return "`FromHost`";        break;
+			case 'input'    : return $this->sqlSysLogTag; break;
+			case 'priority' : return "`Priority`";        break;
+			case 'facility' : return "`Facility`";        break;
+		}
+	}
+
+	protected function prepareSql($field, $value)
+	{
+		if (-1 != $value)
+		{
+			$sql = $this->getSqlColumn($field) . ('input' === $field) ? " = %s" : "LIKE %s%";
+			$this->sqlWhere = str_replace('%s', $value, $sql);
+		}
+		else
+		{
+			$this->sqlSelect  = $this->getSqlColumn($field) . " AS source, COUNT(*) as `count`";
+			$this->sqlWhere   = 1;
+			$this->sqlGroupBy = "GROUP BY source";
+			$this->sqlOrderBy = "ORDER BY `source` ASC";
+		}
 	}
 }

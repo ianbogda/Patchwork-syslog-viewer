@@ -127,97 +127,105 @@ $(document).ready(function() {
 		location.reload();
 	});
 
+<!--
+IF d$graphData
+
+	IF 'priority' == g$__1__ || 'facility' == g$__1__
+
+	-->
+
 	$('head').append('<script src="{~}js/jquery.flot.js"></scrip>');
 	$('head').append('<script src="{~}js/jquery.flot.time.js"></scrip>');
 
 	<!--
+	SET $_max   -->0<!-- END:SET
+	SET $_count -->0<!-- END:SET
 
-	IF 'priority' == g$__1__ || 'facility' == g$__1__
+	LOOP d$severities
+		SET $_data -->0<!-- END:SET
+		LOOP $$graphData
+			IF $$iteratorPosition == $data
+				SET $$_data -->1<!-- END:SET
+			END:IF
+		END:LOOP
+
+		IF $_data
+			-->var d{$iteratorPosition} = [ <!--
+			SET $_iterator -->{$iteratorPosition}<!-- END:SET
+
+			LOOP $$graphData
+				IF $$_iterator == $data
+					SET $$$_max -->{$$$_max+1}<!--    END:SET
+				END:IF
+			END:LOOP
+
+			LOOP $$graphData
+				IF $$_iterator == $data
+					-->[ {$timestamped * 1000}, {$total} ]<!--
+					SET $$$_count -->{$$$_count+1}<!-- END:SET
+					IF $$$_count < $$$_max
+						-->,<!--
+					END:IF
+				END:IF
+			END:LOOP
+			--> ];<!--
+		END:IF
+	END:LOOP
+
+	-->
+
+	$.plot($("#graph-lines"), [ <!--
 		SET $_max   -->0<!-- END:SET
 		SET $_count -->0<!-- END:SET
 
 		LOOP d$severities
-			SET $_data -->0<!-- END:SET
 			LOOP $$graphData
-				IF $$iteratorPosition == $data
+				IF $$iteratorPosition == $data && !$$_locked
+					SET $$$_max   -->{$$$_max+1}<!-- END:SET
+					SET $$_locked -->1<!-- END:SET
+				END:IF
+			END:LOOP
+		END:LOOP
+
+		LOOP d$severities
+			SET $_data -->0<!-- END:SET
+
+			LOOP $$graphData
+				IF $$iteratorPosition == $data && !$$_locked
 					SET $$_data -->1<!-- END:SET
 				END:IF
 			END:LOOP
 
 			IF $_data
-				-->var d{$iteratorPosition} = [ <!--
-				SET $_iterator -->{$iteratorPosition}<!-- END:SET
+				SET $_locked -->0<!-- END:SET
 
 				LOOP $$graphData
-					IF $$_iterator == $data
-						SET $$$_max -->{$$$_max+1}<!--    END:SET
-					END:IF
-				END:LOOP
+					IF $$iteratorPosition == $data && !$$_locked
+						-->{ label: {$$severity|js}, data: d{$$iteratorPosition} }<!--
 
-				LOOP $$graphData
-					IF $$_iterator == $data
-						-->[ {$timestamped * 1000}, {$total} ]<!--
+						SET $$_locked -->1<!--             END:SET
 						SET $$$_count -->{$$$_count+1}<!-- END:SET
+
 						IF $$$_count < $$$_max
 							-->,<!--
 						END:IF
+
 					END:IF
 				END:LOOP
-				--> ];<!--
 			END:IF
 		END:LOOP
-	END:IF
-
-	-->
-
-	$.plot($("#graph-lines"), [ <!--
-		IF g$__1__
-			SET $_max   -->0<!-- END:SET
-			SET $_count -->0<!-- END:SET
-
-			LOOP d$severities
-				LOOP $$graphData
-					IF $$iteratorPosition == $data && !$$_locked
-						SET $$$_max   -->{$$$_max+1}<!-- END:SET
-						SET $$_locked -->1<!-- END:SET
-					END:IF
-				END:LOOP
-			END:LOOP
-			LOOP d$severities
-				SET $_data -->0<!-- END:SET
-
-				LOOP $$graphData
-					IF $$iteratorPosition == $data && !$$_locked
-						SET $$_data -->1<!-- END:SET
-					END:IF
-				END:LOOP
-
-				IF $_data
-					SET $_locked -->0<!-- END:SET
-
-					LOOP $$graphData
-						IF $$iteratorPosition == $data && !$$_locked
-							-->{ label: {$$severity|js}, data: d{$$iteratorPosition} }<!--
-
-							SET $$_locked -->1<!--             END:SET
-							SET $$$_count -->{$$$_count+1}<!-- END:SET
-
-							IF $$$_count < $$$_max
-								-->,<!--
-							END:IF
-
-						END:IF
-					END:LOOP
-				END:IF
-			END:LOOP
-		END:IF
 		--> ], {
 		series: {
 			lines: { show: true},
 			points: { show: true}
 		},
 		xaxis: { mode : "time" }
-	});
+	});<!--
+
+	END:IF
+
+END:IF
+-->
 
 });
 </script>
