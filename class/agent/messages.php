@@ -103,8 +103,17 @@ class agent_messages extends agent
 
 	function compose($o)
 	{
-		//TODO check if udf exists
-		$r = DB()->exec($this->sqlRegexReplace);
+		$db = DB();
+
+		$sql = "SELECT ROUTINE_NAME
+				FROM INFORMATION_SCHEMA.ROUTINES
+				WHERE
+					ROUTINE_TYPE='FUNCTION'
+					AND ROUTINE_SCHEMA='{$CONFIG['doctrine.dbname']}'
+					AND SPECIFIC_NAME ='regex_replace'";
+		$sql = $db->query($sql);
+
+		if (false === $sql->fetch()) $udf = $db->exec($this->sqlRegexReplace);
 
 		$sql = "SELECT {$this->sqlSelect}
 				FROM `SystemEvents`
