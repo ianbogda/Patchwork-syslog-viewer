@@ -158,7 +158,7 @@ class agent_messages extends agent
 				{$this->sqlOrderBy}
 				LIMIT {$this->sqlLimit}, {$this->results_per_page}";
 
-		$o->messages = new loop_sql($sql);
+//		$o->messages = new loop_sql($sql);
 
 		$o->severities = new loop_array($this->severities, 'filter_rawArray');
 		$o->facilities = new loop_array($this->facilities, 'filter_rawArray');
@@ -166,6 +166,23 @@ class agent_messages extends agent
 		$o->results_per_page = $this->results_per_page;
 		$o->page  = $this->get->p + 1;
 
+		switch ($this->get->__1__)
+		{
+			case 'host'     : $this->sqlWhere = "`FromHost`";  break;
+			case 'input'    : $this->sqlWhere = "`SysLogTag`"; break;
+			case 'priority' : $this->sqlWhere = "`Priority`";  break;
+			case 'facility' : $this->sqlWhere = "`Facility`";  break;
+		}
+		$this->sqlWhere .= " AS data,
+			COUNT({$this->sqlWhere}) as total,
+			UNIX_TIMESTAMP(`ReceivedAt`) AS timestamped";
+
+		$sql = "SELECT {$this->sqlWhere}
+				FROM `SystemEvents`
+				GROUP BY data, YEAR(`ReceivedAt`), MONTH(`ReceivedAt`), DAY(`ReceivedAt`)
+				ORDER BY timestamped";
+		$o->graphData = new loop_sql($sql);
+E($sql);
 		return $o;
 	}
 }

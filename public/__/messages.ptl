@@ -124,7 +124,7 @@ END:LOOP
 		</div>
 
 		<div class="graph-container">
-			<div id="graph-lines"></div>
+			<div id="graph-lines" style="width:600px;height:300px;"></div>
 			<div id="graph-bar"></div>
 		</div>
 
@@ -133,9 +133,55 @@ END:LOOP
 
 <script>
 $(document).ready(function() {
-	$('#Button1').click(function() {
+	$('#refresh').click(function() {
 		location.reload();
 	});
+
+	$('head').append('<script src="{~}js/jquery.flot.js"></scrip>');
+	$('head').append('<script src="{~}js/jquery.flot.time.js"></scrip>');
+
+	<!--
+
+	IF 'priority' = g$__1__
+		LOOP d$severities
+		-->var d{$iteratorPosition} = [ <!--
+			LOOP $$graphData
+				IF $$iteratorPosition == $data
+					-->[ {$timestamped * 1000}, {$total} ]<!--
+					IF $iteratorposition < $$graphData -1
+						-->,<!--
+					END:IF
+				END:IF
+			END:LOOP
+			--> ];<!--
+		END:LOOP
+	END:IF
+	
+	-->
+
+	$.plot($("#graph-lines"), [ <!--
+		IF 'priority' = g$__1__
+			LOOP d$severities
+				-->{ label: <!--
+				LOOP $$graphData
+					IF $$iteratorPosition == $data
+						-->{$$severity|js}<!--
+					END:IF
+				END:LOOP
+				-->, data: d{$iteratorPosition} }<!--
+				IF $iteratorposition < $severities -1
+					-->,<!--
+				END:IF
+			END:LOOP
+		END:IF
+		--> ], {
+		series: {
+			lines: { show: true},
+			points: { show: true}
+		},
+		xaxis: { mode : "time" }
+	});
+
 });
 </script>
 <!-- AGENT 'footer' -->
