@@ -5,6 +5,14 @@ Patchwork-syslog-viewer is a Syslog-viewer for Patchwork
 
 Install rsyslog 
 --------------
+http://www.rsyslog.com/
+
+Install Patchwork-syslog-viewer
+-------------------------------
+* install [Patchwork](http://pa.tchwork.com) :
+  ```git clone --recursive https://github.com/nicolas-grekas/Patchwork.git```
+* install [Patchwork-syslog-viewer](https://github.com/ianbogda/Patchwork-syslog-viewer) : 
+  ```git clone --recursive https://github.com/ianbogda/Patchwork-syslog-viewer.git```
 
 Optimize MySQL
 --------------
