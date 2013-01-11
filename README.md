@@ -16,8 +16,9 @@ ALTER TABLE `SystemEvents` ADD INDEX(`SysLogTag`);
 ALTER TABLE `SystemEvents` ADD INDEX(`DeviceReportedTime`);
 ```
 
-pChart
-------
-pChart was to provide an easy interface for drawing anti-aliased pictures using the GD library.
+flot
+----
+flot is an attractive JavaScript charts for jQuery
 
-[pChart](http://www.pchart.net/)
+[flot](http://www.flotcharts.org/)
+[flot on github](https://github.com/flot/flot)
