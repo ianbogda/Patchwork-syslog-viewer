@@ -20,5 +20,5 @@ flot
 ----
 flot is an attractive JavaScript charts for jQuery
 
-[flot](http://www.flotcharts.org/)
-[flot on github](https://github.com/flot/flot)
+* [flot](http://www.flotcharts.org/)
+* [flot on github](https://github.com/flot/flot)
