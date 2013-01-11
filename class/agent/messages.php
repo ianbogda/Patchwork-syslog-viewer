@@ -124,13 +124,26 @@ class agent_messages extends agent
 					case 'facility' : $this->sqlSelect = "`Facility`";  break;
 					case 'input'    : $this->sqlSelect = "`SysLogTag`"; break;
 				}
-				$this->sqlSelect = "regex_replace('\\\\\]|\\\\\[|:','',"
+/*				$this->sqlSelect = "regex_replace('\\\\\]|\\\\\[|:','',"
 					. ( 'input' == $this->get->__1__ ? "regex_replace('([0-9])',''," : "" )
 					. "{$this->sqlSelect})"
 					. ( 'input' == $this->get->__1__ ? ")" : "" )
 					. " AS source, COUNT(*) as `count`";
+*/
+				$this->sqlSelect .= " AS source, COUNT(*) as `count`";
 				$this->sqlGroupBy = "GROUP BY source";
 				$this->sqlOrderBy = "ORDER BY `source` ASC";
+/*
+				$sql = "SELECT ROUTINE_NAME
+						FROM INFORMATION_SCHEMA.ROUTINES
+						WHERE
+							ROUTINE_TYPE='FUNCTION'
+							AND ROUTINE_SCHEMA='{$CONFIG['doctrine.dbname']}'
+							AND SPECIFIC_NAME ='regex_replace'";
+				$sql = $db->query($sql);
+
+				if (false === $sql->fetch()) $udf = DB()->exec($this->sqlRegexReplace);
+*/
 			}
 		}
 
@@ -139,18 +152,6 @@ class agent_messages extends agent
 
 	function compose($o)
 	{
-		$db = DB();
-
-		$sql = "SELECT ROUTINE_NAME
-				FROM INFORMATION_SCHEMA.ROUTINES
-				WHERE
-					ROUTINE_TYPE='FUNCTION'
-					AND ROUTINE_SCHEMA='{$CONFIG['doctrine.dbname']}'
-					AND SPECIFIC_NAME ='regex_replace'";
-		$sql = $db->query($sql);
-
-		if (false === $sql->fetch()) $udf = $db->exec($this->sqlRegexReplace);
-
 		$sql = "SELECT {$this->sqlSelect}
 				FROM `SystemEvents`
 				WHERE {$this->sqlWhere}
@@ -182,7 +183,7 @@ class agent_messages extends agent
 				GROUP BY data, YEAR(`ReceivedAt`), MONTH(`ReceivedAt`), DAY(`ReceivedAt`)
 				ORDER BY timestamped";
 		$o->graphData = new loop_sql($sql);
-E($sql);
+
 		return $o;
 	}
 }

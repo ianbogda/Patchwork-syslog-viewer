@@ -1,14 +1,5 @@
 <!-- AGENT 'header' title='Syslog Viewer for Patchwork' -->
 
-{*
-$o->severities = new loop_array($this->severities, 'filter_rawArray');
-$o->facilities = new loop_array($this->facilities, 'filter_rawArray');
-*}
-
-__0__ : {g$__0__}<br>
-__1__ : {g$__1__}<br>
-__2__ : {g$__2__}<br>
-
 <div id="subfilters">
 <ul><!--
 LOOP d$severities
@@ -124,13 +115,12 @@ END:LOOP
 		</div>
 
 		<div class="graph-container">
-			<div id="graph-lines" style="width:600px;height:300px;"></div>
+			<div id="graph-lines" style="width:860px;height:480px;"></div>
 			<div id="graph-bar"></div>
 		</div>
 
 	</div>
 </div>
-
 <script>
 $(document).ready(function() {
 	$('#refresh').click(function() {
@@ -142,35 +132,82 @@ $(document).ready(function() {
 
 	<!--
 
-	IF 'priority' = g$__1__
+	IF 'priority' == g$__1__ || 'facility' == g$__1__
+		SET $_max   -->0<!-- END:SET
+		SET $_count -->0<!-- END:SET
+
 		LOOP d$severities
-		-->var d{$iteratorPosition} = [ <!--
+			SET $_data -->0<!-- END:SET
 			LOOP $$graphData
 				IF $$iteratorPosition == $data
-					-->[ {$timestamped * 1000}, {$total} ]<!--
-					IF $iteratorposition < $$graphData -1
-						-->,<!--
-					END:IF
+					SET $$_data -->1<!-- END:SET
 				END:IF
 			END:LOOP
-			--> ];<!--
+
+			IF $_data
+				-->var d{$iteratorPosition} = [ <!--
+				SET $_iterator -->{$iteratorPosition}<!-- END:SET
+
+				LOOP $$graphData
+					IF $$_iterator == $data
+						SET $$$_max -->{$$$_max+1}<!--    END:SET
+					END:IF
+				END:LOOP
+
+				LOOP $$graphData
+					IF $$_iterator == $data
+						-->[ {$timestamped * 1000}, {$total} ]<!--
+						SET $$$_count -->{$$$_count+1}<!-- END:SET
+						IF $$$_count < $$$_max
+							-->,<!--
+						END:IF
+					END:IF
+				END:LOOP
+				--> ];<!--
+			END:IF
 		END:LOOP
 	END:IF
-	
+
 	-->
 
 	$.plot($("#graph-lines"), [ <!--
-		IF 'priority' = g$__1__
+		IF g$__1__
+			SET $_max   -->0<!-- END:SET
+			SET $_count -->0<!-- END:SET
+
 			LOOP d$severities
-				-->{ label: <!--
 				LOOP $$graphData
-					IF $$iteratorPosition == $data
-						-->{$$severity|js}<!--
+					IF $$iteratorPosition == $data && !$$_locked
+						SET $$$_max   -->{$$$_max+1}<!-- END:SET
+						SET $$_locked -->1<!-- END:SET
 					END:IF
 				END:LOOP
-				-->, data: d{$iteratorPosition} }<!--
-				IF $iteratorposition < $severities -1
-					-->,<!--
+			END:LOOP
+			LOOP d$severities
+				SET $_data -->0<!-- END:SET
+
+				LOOP $$graphData
+					IF $$iteratorPosition == $data && !$$_locked
+						SET $$_data -->1<!-- END:SET
+					END:IF
+				END:LOOP
+
+				IF $_data
+					SET $_locked -->0<!-- END:SET
+
+					LOOP $$graphData
+						IF $$iteratorPosition == $data && !$$_locked
+							-->{ label: {$$severity|js}, data: d{$$iteratorPosition} }<!--
+
+							SET $$_locked -->1<!--             END:SET
+							SET $$$_count -->{$$$_count+1}<!-- END:SET
+
+							IF $$$_count < $$$_max
+								-->,<!--
+							END:IF
+
+						END:IF
+					END:LOOP
 				END:IF
 			END:LOOP
 		END:IF
