@@ -1,0 +1,9 @@
+<!-- INLINE css/style.css -->
+.Emerg {background:Magenta}
+.Alert {background:Maroon}
+.Critic {background:red}
+.Error {background:orange}
+.Warning {background:yellow}
+.Notice {background:limegreen}
+.Info {background:LightSkyBlue}
+.Debug {background:white}

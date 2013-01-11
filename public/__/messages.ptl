@@ -1,5 +1,33 @@
 <!-- AGENT 'header' title='Syslog Viewer for Patchwork' -->
 
+{*
+$o->severities = new loop_array($this->severities, 'filter_rawArray');
+$o->facilities = new loop_array($this->facilities, 'filter_rawArray');
+*}
+
+__0__ : {g$__0__}<br>
+__1__ : {g$__1__}<br>
+__2__ : {g$__2__}<br>
+
+<div id="subfilters">
+<ul><!--
+LOOP d$severities
+	SET $_level -->{g$__1__}/{$iteratorPosition}<!-- END:SET
+	IF $_level == g$__0__
+		--><li><b class="linkLoop {$severity}">{$severity}</b></li><!--
+	ELSE
+		SET $_linkSeverity -->{~}messages/priority/{$iteratorPosition}<!-- END:SET
+		SET $_descriptionSeverity -->title="{$description}" class="{$severity}"<!-- END:SET
+		--><li>{$severity|linkto:$_linkSeverity:$_descriptionSeverity}</li><!--
+	END:IF
+END:LOOP
+--></ul>
+</div>
+
+<div id="facilities">
+	<input id="refresh" type="button" value="Refresh" />
+</div>
+
 <div id="content">
 	<p>
 	{d$messages} events
@@ -9,10 +37,10 @@
 	<thead>
 		<tr><!--
 		IF g$__2__ || !g$__1__
-			--><th width="150">Date</th>
-			<th width="100">Facility</th>
-			<th width="100">Host</th>
-			<th width="100">Tag</th>
+			--><th>Date</th>
+			<th>Facility</th>
+			<th>Host</th>
+			<th>Tag</th>
 			<th>Severity</th>
 			<th width="*">Message</th><!--
 		ELSE
@@ -24,29 +52,63 @@
 	<tbody>
 	<!-- LOOP d$messages -->
 	<!--
-		SET a$_syslog -->{$SysLogTag|replace:'(\[(.*)\]?|:)$':''}<!-- END:SET
+		SET $_sysLogTag -->{$SysLogTag|replace:'(\[(.*)\]?|:)$':''}<!-- END:SET
 
-		SET a$_linkFacility -->messages/facility/{$Facility}<!-- END:SET
-		SET a$_linkHost     -->messages/host/{$FromHost}<!--     END:SET
-		SET a$_linkInput    -->messages/input/{a$_syslog}<!--    END:SET
-		SET a$_linkPriority -->messages/priority/{$Priority}<!-- END:SET
+		SET $_linkFacility -->messages/facility/{$Facility}<!-- END:SET
+		SET $_linkHost     -->messages/host/{$FromHost}<!--     END:SET
+		SET $_linkInput    -->messages/input/{a$_syslog}<!--    END:SET
+		SET $_linkSeverity -->messages/priority/{$Priority}<!-- END:SET
 
-		SET a$_classError --><!--
-			IF 0 <= $Priority && 5 >= $Priority
-				-->error<!--
-			ELSE
-				-->info<!--
-			END:IF --><!--
+		SET $_classError --><!--
+			SET $_level -->{g$__1__}<!-- END:SET
+			LOOP $$severities
+				IF $$Priority == $iteratorPosition && $_level = 'priority'
+					|| $$Priority == $iteratorPosition && !$_level
+					-->{$severity}<!--
+				END:IF
+			END:LOOP --><!--
 		END:SET
 
-		--><tr class="{a$_classError}"><!--
+		SET $_facility --><!--
+			LOOP $$facilities
+				IF $$Facility == $iteratorPosition
+					-->{$facility}<!--
+				END:IF
+			END:LOOP --><!--
+		END:SET
+
+		SET $_facilityTitle --><!--
+			LOOP $$facilities
+				IF $$Facility == $iteratorPosition
+					-->title="{$description}"<!--
+				END:IF
+			END:LOOP --><!--
+		END:SET
+
+		SET $_severity --><!--
+			LOOP $$severities
+				IF $$Priority == $iteratorPosition
+					-->{$severity}<!--
+				END:IF
+			END:LOOP --><!--
+		END:SET
+
+		SET $_severityTitle --><!--
+			LOOP $$severities
+				IF $$Priority == $iteratorPosition
+					-->title="{$description}"<!--
+				END:IF
+			END:LOOP --><!--
+		END:SET
+
+		--><tr class="{$_classError}"><!--
 
 		IF g$__2__ || !g$__1__
 			--><td>{$ReceivedAt}</td>
-			<td>{linkto:$Facility:a$_linkFacility}</td>
-			<td>{linkto:$FromHost:a$_linkHost}</td>
-			<td>{linkto:a$_syslog:a$_linkInput}</td>
-			<td>{linkto:$Priority:a$_linkPriority:a$_classError}</td>
+			<td>{linkto:$_facility:$_linkFacility:$_facilityTitle}</td>
+			<td>{linkto:$FromHost:$_linkHost}</td>
+			<td>{linkto:$_sysLogTag:$_linkInput}</td>
+			<td>{linkto:$_severity:$_linkSeverity:$_severityTitle}</td>
 			<td>{$Message}</td><!--
 		ELSE
 			SET $_linkSource -->{~}messages/{g$__1__}/{$source}<!-- END:SET
@@ -69,4 +131,11 @@
 	</div>
 </div>
 
+<script>
+$(document).ready(function() {
+	$('#Button1').click(function() {
+		location.reload();
+	});
+});
+</script>
 <!-- AGENT 'footer' -->
