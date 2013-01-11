@@ -14,11 +14,12 @@ class agent_messages extends agent
 
 	$results_per_page = 50,
 
-	$sqlSelect = 'ID, ReceivedAt, FromHost, SysLogTag, Priority, Facility, Message',
-	$sqlWhere = 1,
-	$sqlGroupBy = '',
-	$sqlOrderBy = 'ORDER BY `ReceivedAt` DESC',
-	$sqlLimit = 0,
+	$sqlSysLogTag = "IF('' <> LEFT(`SysLogTag`, LOCATE('[', `SysLogTag`) -1), LEFT(`SysLogTag`, LOCATE('[', `SysLogTag`) -1) , LEFT(`SysLogTag`, LOCATE(':', `SysLogTag`) -1))",
+	$sqlSelect    = "ID, ReceivedAt, FromHost, %s, Priority, Facility, Message",
+	$sqlWhere     = 1,
+	$sqlGroupBy   = '',
+	$sqlOrderBy   = 'ORDER BY `ReceivedAt` DESC',
+	$sqlLimit     = 0,
 
 	/* lists from http://wiki.gentoo.org/wiki/Rsyslog */
 	$severities = array(
@@ -56,36 +57,7 @@ class agent_messages extends agent
 		21 => array('facility' => 'local5',   'description' => 'local use 5 (local5)'),
 		22 => array('facility' => 'local6',   'description' => 'local use 6 (local6)'),
 		23 => array('facility' => 'local7',   'description' => 'local use 7 (local7)'),
-	),
-
-	/* from http://techras.wordpress.com/2011/06/02/regex-replace-for-mysql/ */
-	$sqlRegexReplace = "CREATE FUNCTION  `regex_replace`(pattern VARCHAR(1000),replacement VARCHAR(1000),original VARCHAR(1000))
-						RETURNS VARCHAR(1000)
-						DETERMINISTIC
-						BEGIN 
-							DECLARE temp VARCHAR(1000); 
-							DECLARE ch VARCHAR(1); 
-							DECLARE i INT;
-							SET i = 1;
-							SET temp = '';
-							IF original REGEXP pattern THEN 
-								loop_label: LOOP 
-									IF i>CHAR_LENGTH(original) THEN
-										LEAVE loop_label;  
-									END IF;
-									SET ch = SUBSTRING(original,i,1);
-									IF NOT ch REGEXP pattern THEN
-										SET temp = CONCAT(temp,ch);
-									ELSE
-										SET temp = CONCAT(temp,replacement);
-									END IF;
-									SET i=i+1;
-								END LOOP;
-							ELSE
-								SET temp = original;
-							END IF;
-							RETURN temp;
-						END;";
+	);
 
 	function control()
 	{
@@ -95,10 +67,10 @@ class agent_messages extends agent
 		{
 			switch ($this->get->__1__)
 			{
-				case 'host'     : $this->sqlWhere = "`FromHost`";  break;
-				case 'input'    : $this->sqlWhere = "`SysLogTag`"; break;
-				case 'priority' : $this->sqlWhere = "`Priority`";  break;
-				case 'facility' : $this->sqlWhere = "`Facility`";  break;
+				case 'host'     : $this->sqlWhere  = "`FromHost`";        break;
+				case 'input'    : $this->sqlSelect = $this->sqlSysLogTag; break;
+				case 'priority' : $this->sqlWhere  = "`Priority`";        break;
+				case 'facility' : $this->sqlWhere  = "`Facility`";        break;
 			}
 
 
@@ -119,31 +91,15 @@ class agent_messages extends agent
 
 				switch ($this->get->__1__)
 				{
-					case 'host'     : $this->sqlSelect = "`FromHost`";  break;
-					case 'priority' : $this->sqlSelect = "`Priority`";  break;
-					case 'facility' : $this->sqlSelect = "`Facility`";  break;
-					case 'input'    : $this->sqlSelect = "`SysLogTag`"; break;
+					case 'host'     : $this->sqlSelect = "`FromHost`";        break;
+					case 'input'    : $this->sqlSelect = $this->sqlSysLogTag; break;
+					case 'priority' : $this->sqlSelect = "`Priority`";        break;
+					case 'facility' : $this->sqlSelect = "`Facility`";        break;
 				}
-/*				$this->sqlSelect = "regex_replace('\\\\\]|\\\\\[|:','',"
-					. ( 'input' == $this->get->__1__ ? "regex_replace('([0-9])',''," : "" )
-					. "{$this->sqlSelect})"
-					. ( 'input' == $this->get->__1__ ? ")" : "" )
-					. " AS source, COUNT(*) as `count`";
-*/
+
 				$this->sqlSelect .= " AS source, COUNT(*) as `count`";
 				$this->sqlGroupBy = "GROUP BY source";
 				$this->sqlOrderBy = "ORDER BY `source` ASC";
-/*
-				$sql = "SELECT ROUTINE_NAME
-						FROM INFORMATION_SCHEMA.ROUTINES
-						WHERE
-							ROUTINE_TYPE='FUNCTION'
-							AND ROUTINE_SCHEMA='{$CONFIG['doctrine.dbname']}'
-							AND SPECIFIC_NAME ='regex_replace'";
-				$sql = $db->query($sql);
-
-				if (false === $sql->fetch()) $udf = DB()->exec($this->sqlRegexReplace);
-*/
 			}
 		}
 
@@ -152,6 +108,7 @@ class agent_messages extends agent
 
 	function compose($o)
 	{
+		$this->sqlSelect = str_replace('%s', $this->sqlSysLogTag . ' AS SysLogTag', $this->sqlSelect);
 		$sql = "SELECT {$this->sqlSelect}
 				FROM `SystemEvents`
 				WHERE {$this->sqlWhere}
@@ -159,7 +116,7 @@ class agent_messages extends agent
 				{$this->sqlOrderBy}
 				LIMIT {$this->sqlLimit}, {$this->results_per_page}";
 
-//		$o->messages = new loop_sql($sql);
+		$o->messages = new loop_sql($sql);
 
 		$o->severities = new loop_array($this->severities, 'filter_rawArray');
 		$o->facilities = new loop_array($this->facilities, 'filter_rawArray');
