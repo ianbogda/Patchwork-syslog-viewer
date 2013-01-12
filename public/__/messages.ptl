@@ -28,7 +28,7 @@ END:LOOP
 	<thead>
 		<tr><!--
 		IF g$__2__ || !g$__1__
-			--><th>Date</th>
+			--><th width="150">Date</th>
 			<th>Facility</th>
 			<th>Host</th>
 			<th>Tag</th>

@@ -1,6 +1,55 @@
 <!-- INLINE css/style.css -->
 
-a, table {color: black}
+html { margin: 0 auto}
+body { background-color: white; color: #339; }
+
+/*a, a:link, a:visited { color: #7aa054; outline:none;}
+a:hover { text-decoration: none; color: #455138;}
+*/
+header {
+background-color: #F3F3F3;
+background-image: -moz-linear-gradient(#F9F9F9, #F3F3F3);
+background-image: -webkit-linear-gradient(#F9F9F9, #F3F3F3);
+background-image: linear-gradient(#F9F9F9, #F3F3F3);
+background-repeat: repeat-x;
+	width: 100%;
+	padding: 0;
+	margin: 0 0 24px;
+	top: 1px;
+	left: 0;
+	border-bottom: 1px solid #CCC;
+	box-shadow: 0 -1px 0 white inset;
+	-moz-box-shadow: 0 -1px 0 #fff inset;
+	-webkit-box-shadow: 0 -1px 0 white inset;
+	z-index: 10;
+	height: auto;
+	overflow: hidden;
+}
+header a { color: #888; }
+header #quick-search { margin: 0 24px; }
+nav { margin: 0; }
+nav ul { padding: 0 21px; }
+nav li { color: #ddd; line-height: 21px; margin: 10px; list-style: none; display:inline }
+nav li a, nav li b.linkloop { display: inline-block; color: #aaa; font-weight: normal; padding:4px 5px; width:60px }
+nav li a:hover { color: #fff; text-decoration: none; }
+
+nav li b.linkLoop {border-bottom: 2px solid #D26911;}
+
+.main-container { width: 90%;background: white; margin: 0 auto; }
+#content { 
+	background: #F9F9F9;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	border: 1px solid #EAEAEA;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	border-color: #CCC;
+	-moz-box-shadow: 0 0 0 3px #eee;
+	-webkit-box-shadow: 0 0 0 3px #EEE;
+	box-shadow: 0 0 0 3px #EEE;
+}
+
 .Emerg {background:magenta}
 .Alert {background:maroon}
 .Critic {background:red}
@@ -9,3 +58,21 @@ a, table {color: black}
 .Notice {background:green}
 .Info {background:blue}
 .Debug {background:white}
+
+#subfilters { position: absolute; top: 80px; left: 10% }
+#subfilters li { display: inline; listt-style: none; margin-right: 5px;}
+#subfilters li a, #subfilters li b.linkLoop {
+	display: inline-block;
+	width: 60px;
+	text-align: center;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+}
+#refresh {position: absolute; top: 80px; right: 10% }
+table th { font-size: 13px; font-weight: normal; background: #B9C9FE; border-top: 4px solid #AABCFE; border-bottom: 1px solid white; color: #039; padding: 8px; }
+table tr:hover {background: #D0DAFD; color: #339;}
+table td {border-bottom: 1px solid white;border-top: 1px solid transparent; padding: 8px;}
+a, table {color: #333}
+
+#graph-lines { margin:0 auto;}
