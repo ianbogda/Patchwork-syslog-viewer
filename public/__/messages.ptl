@@ -41,23 +41,18 @@ END:LOOP
 			--></tr>
 	</thead>
 	<tbody>
-	<!-- LOOP d$messages -->
 	<!--
+	 LOOP d$messages
+
 		SET $_linkFacility  -->messages/facility/{$Facility}<!--  END:SET
 		SET $_linkHost      -->messages/host/{$FromHost}<!--      END:SET
-		SET $_linkInput     -->messages/input/{a$_syslog}<!--     END:SET
+		SET $_linkInput     -->messages/input/{$SysLogTag}<!--     END:SET
 		SET $_linkSeverity  -->messages/priority/{$Priority}<!--  END:SET
 
 		SET $_facilityTitle -->title="{$facilityDescription}"<!-- END:SET
 		SET $_severityTitle -->title="{$severityDescription}"<!-- END:SET
 
-		SET $_level         -->{g$__1__}<!--                      END:SET
-
-		--><tr<!--	IF $$Priority == $iteratorPosition && $_level = 'priority'
-						|| $$Priority == $iteratorPosition && !$_level
-						--> class="{$severityString}"<!--
-					END:IF
-					-->><!--
+		--><tr class="{$severityString}"><!--
 
 		IF g$__2__ || !g$__1__
 			--><td>{$ReceivedAt}</td>
@@ -70,9 +65,12 @@ END:LOOP
 			SET $_linkSource -->{~}messages/{g$__1__}/{$source}<!-- END:SET
 			--><td>{$source|linkto:$_linkSource:$source}</td>
 			<td>{$count}</td><!--
-		END:IF -->
-		</tr>
-	<!-- END:LOOP -->
+		END:IF
+		--></tr><!--
+	END:LOOP
+
+	-->
+	</tbody>
 	</table>
 
 	<div id="graph-wrapper">

@@ -87,9 +87,10 @@ class agent_messages extends agent
 
 	protected function prepareSql($field, $value)
 	{
+
 		if (-1 != $value)
 		{
-			$sql = $this->getSqlColumn($field) . ('input' === $field) ? " = %s" : "LIKE %s%";
+			$sql = $this->getSqlColumn($field) . ('input' === $field ? " LIKE %s%" : " = %s");
 			$this->sqlWhere = str_replace('%s', $value, $sql);
 		}
 		else
