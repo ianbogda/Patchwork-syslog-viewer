@@ -1,4 +1,11 @@
 <!-- INLINE css/style.css -->
-<!-- LOOP d$severities -->
-.{$severity} {background:{$color}}
-<!-- END:LOOP -->
+
+a, table {color: black}
+.Emerg {background:magenta}
+.Alert {background:maroon}
+.Critic {background:red}
+.Error {background:orange}
+.Warning {background:yellow}
+.Notice {background:green}
+.Info {background:blue}
+.Debug {background:white}

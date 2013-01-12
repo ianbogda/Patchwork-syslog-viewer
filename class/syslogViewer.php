@@ -35,17 +35,17 @@ class syslogViewer
 		5 => array(
 			'severity'    => 'Notice',
 			'description' => 'normal but significant condition',
-			'color'       => 'limegreen',
+			'color'       => 'green',
 		),
 		6 => array(
 			'severity'    => 'Info',
 			'description' => 'informational messages',
-			'color'       => 'lightSkyBlue',
+			'color'       => 'blue',
 		),
 		7 => array(
-			'severity' => 'Debug',
+			'severity'    => 'Debug',
 			'description' => 'debug-level messages',
-			'color'       => 'grey',
+			'color'       => 'black',
 		)
 	),
 	$facilities = array(
