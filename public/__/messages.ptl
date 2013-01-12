@@ -142,7 +142,7 @@ IF d$graphData
 	-->
 	$.plot($("#graph-lines"), [ <!--
 		LOOP d$labels
-			-->{ label: {$labelString|js}, data: d{$labelNumeric} }<!--
+			-->{ label: {$labelString|js}, data: d{$labelNumeric}, highlightColor: {$labelColor|js} }<!--
 			IF $iteratorPosition < $$labels-1
 				-->,<!--
 			END:IF
