@@ -55,7 +55,7 @@ END:LOOP
 
 		--><tr<!--	IF $$Priority == $iteratorPosition && $_level = 'priority'
 						|| $$Priority == $iteratorPosition && !$_level
-						--> class="{$classError}"<!--
+						--> class="{$severityString}"<!--
 					END:IF
 					-->><!--
 
