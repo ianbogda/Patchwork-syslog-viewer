@@ -43,63 +43,28 @@ END:LOOP
 	<tbody>
 	<!-- LOOP d$messages -->
 	<!--
-		SET $_sysLogTag -->{$SysLogTag|replace:'(\[(.*)\]?|:)$':''}<!-- END:SET
+		SET $_linkFacility  -->messages/facility/{$Facility}<!--  END:SET
+		SET $_linkHost      -->messages/host/{$FromHost}<!--      END:SET
+		SET $_linkInput     -->messages/input/{a$_syslog}<!--     END:SET
+		SET $_linkSeverity  -->messages/priority/{$Priority}<!--  END:SET
 
-		SET $_linkFacility -->messages/facility/{$Facility}<!-- END:SET
-		SET $_linkHost     -->messages/host/{$FromHost}<!--     END:SET
-		SET $_linkInput    -->messages/input/{a$_syslog}<!--    END:SET
-		SET $_linkSeverity -->messages/priority/{$Priority}<!-- END:SET
+		SET $_facilityTitle -->title="{$facilityDescription}"<!-- END:SET
+		SET $_severityTitle -->title="{$severityDescription}"<!-- END:SET
 
-		SET $_classError --><!--
-			SET $_level -->{g$__1__}<!-- END:SET
-			LOOP $$severities
-				IF $$Priority == $iteratorPosition && $_level = 'priority'
-					|| $$Priority == $iteratorPosition && !$_level
-					-->{$severity}<!--
-				END:IF
-			END:LOOP --><!--
-		END:SET
+		SET $_level         -->{g$__1__}<!--                      END:SET
 
-		SET $_facility --><!--
-			LOOP $$facilities
-				IF $$Facility == $iteratorPosition
-					-->{$facility}<!--
-				END:IF
-			END:LOOP --><!--
-		END:SET
-
-		SET $_facilityTitle --><!--
-			LOOP $$facilities
-				IF $$Facility == $iteratorPosition
-					-->title="{$description}"<!--
-				END:IF
-			END:LOOP --><!--
-		END:SET
-
-		SET $_severity --><!--
-			LOOP $$severities
-				IF $$Priority == $iteratorPosition
-					-->{$severity}<!--
-				END:IF
-			END:LOOP --><!--
-		END:SET
-
-		SET $_severityTitle --><!--
-			LOOP $$severities
-				IF $$Priority == $iteratorPosition
-					-->title="{$description}"<!--
-				END:IF
-			END:LOOP --><!--
-		END:SET
-
-		--><tr class="{$_classError}"><!--
+		--><tr<!--	IF $$Priority == $iteratorPosition && $_level = 'priority'
+						|| $$Priority == $iteratorPosition && !$_level
+						--> class="{$classError}"<!--
+					END:IF
+					-->><!--
 
 		IF g$__2__ || !g$__1__
 			--><td>{$ReceivedAt}</td>
-			<td>{linkto:$_facility:$_linkFacility:$_facilityTitle}</td>
+			<td>{linkto:$facilityString:$_linkFacility:$_facilityTitle}</td>
 			<td>{linkto:$FromHost:$_linkHost}</td>
-			<td>{linkto:$_sysLogTag:$_linkInput}</td>
-			<td>{linkto:$_severity:$_linkSeverity:$_severityTitle}</td>
+			<td>{linkto:$SysLogTag:$_linkInput}</td>
+			<td>{linkto:$severityString:$_linkSeverity:$_severityTitle}</td>
 			<td>{$Message}</td><!--
 		ELSE
 			SET $_linkSource -->{~}messages/{g$__1__}/{$source}<!-- END:SET

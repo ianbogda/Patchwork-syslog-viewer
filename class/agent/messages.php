@@ -78,7 +78,7 @@ class agent_messages extends agent
 				{$this->sqlOrderBy}
 				LIMIT {$this->sqlLimit}, {$this->results_per_page}";
 
-		$o->messages = new loop_sql($sql);
+		$o->messages = new loop_sql($sql, array($this, 'filterMessages'));
 
 		$o->severities = new loop_array($this->severities, 'filter_rawArray');
 		$o->facilities = new loop_array($this->facilities, 'filter_rawArray');
@@ -137,6 +137,22 @@ class agent_messages extends agent
 			$this->sqlGroupBy = "GROUP BY source";
 			$this->sqlOrderBy = "ORDER BY `source` ASC";
 		}
+	}
+
+	function filterMessages($o)
+	{
+		if (isset($o->Priority))
+		{
+			$o->severityString      = $this->severities[$o->Priority]['severity'];
+			$o->severityDescription = $this->severities[$o->Priority]['description'];
+		}
+		if (isset($o->Facility))
+		{
+			$o->facilityString      = $this->facilities[$o->Facility]['facility'];
+			$o->facilityDescription = $this->facilities[$o->Facility]['description'];
+		}
+
+		return $o;
 	}
 
 	function filterLabel($o)
