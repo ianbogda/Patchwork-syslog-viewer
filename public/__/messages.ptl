@@ -78,7 +78,7 @@ END:LOOP
 		</div>
 
 		<div class="graph-container">
-			<div id="graph-lines" style="width:860px;height:480px;"></div>
+			<div id="graph-lines"></div>
 			<div id="graph-bar"></div>
 		</div>
 
@@ -99,6 +99,7 @@ IF d$graphData
 
 	$('head').append('<script src="{~}js/jquery.flot.js"></scrip>');
 	$('head').append('<script src="{~}js/jquery.flot.time.js"></scrip>');
+	$('#graph-lines').css({'width': '860px', 'height' : '480px'});
 
 	<!--
 	SET $_max   -->0<!-- END:SET
