@@ -29,9 +29,18 @@ END:LOOP
 </div>
 
 <div id="content">
-	<p>
-	{d$messages} events
-	</p>
+
+	{* Pagination *}
+	<table class="pagination">
+	<!-- SET $prev -->{($start - $length)}<!-- END:SET
+	SET $next -->{($start + $length)}<!-- END:SET -->
+	<!-- IF $start>0 -->
+	<tr><td><a href="{~}messages/{g$__0__}?start={$prev}&amp;length={$length}">&lt; Prev. {$length}</a></td>
+	<!-- ELSE -->
+	<tr>
+	<!-- END:IF -->
+	<td><a href="{~}messages/{g$__0__}?start={$next}&amp;length={$length}">Next {$length} &gt;</a></td></tr>
+	</table>
 
 	<table class="workers">
 	<thead>

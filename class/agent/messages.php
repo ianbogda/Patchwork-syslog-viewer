@@ -7,27 +7,23 @@ class agent_messages extends agent
 	$get = array(
 		'__1__:c:host|input|priority|facility',
 		'__2__:c' => -1,
-		'p:i' => 0
+		'start:i:0' => 0,
+		'length:i:1' => 25
 	);
 
 	protected
-
-	$results_per_page = 50,
 
 	$sqlSysLogTag = "IF('' <> LEFT(`SysLogTag`, LOCATE('[', `SysLogTag`) -1), LEFT(`SysLogTag`, LOCATE('[', `SysLogTag`) -1) , LEFT(`SysLogTag`, LOCATE(':', `SysLogTag`) -1))",
 	$sqlSelect    = "ID, ReceivedAt, FromHost, %s, Priority, Facility, Message",
 	$sqlWhere     = 1,
 	$sqlGroupBy   = '',
-	$sqlOrderBy   = 'ORDER BY `ReceivedAt` DESC',
-	$sqlLimit     = 0;
+	$sqlOrderBy   = 'ORDER BY `ReceivedAt` DESC';
 
 	function control()
 	{
 		parent::control();
 
 		$this->get->__1__ && $this->prepareSql($this->get->__1__, $this->get->__2__);
-
-		0 != $this->get->p || $this->sqlLimit = $this->get->p * $this->results_per_page;
 	}
 
 	function compose($o)
@@ -38,15 +34,15 @@ class agent_messages extends agent
 				WHERE {$this->sqlWhere}
 				{$this->sqlGroupBy}
 				{$this->sqlOrderBy}
-				LIMIT {$this->sqlLimit}, {$this->results_per_page}";
+				LIMIT {$this->get->start}, {$this->get->length}";
 
 		$o->messages = new loop_sql($sql, array($this, 'filterMessages'));
 
 		$o->severities = new loop_array(syslogViewer::$severities, 'filter_rawArray');
 		$o->facilities = new loop_array(syslogViewer::$facilities, 'filter_rawArray');
 
-		$o->results_per_page = $this->results_per_page;
-		$o->page  = $this->get->p + 1;
+		$o->start  = $this->get->start;
+		$o->length = $this->get->length;
 
 		if ($this->get->__1__)
 		{
