@@ -1,6 +1,5 @@
 <!-- AGENT 'header' title='Syslog Viewer for Patchwork' -->
-//TODO mesages => graph |: Priority   _: Facility 
-//TODO : http://jumflot.jumware.com/spider.html
+
 <div id="subfilters">
 <ul><!--
 LOOP d$severities
@@ -173,7 +172,15 @@ IF d$graphData
 			END:LOOP
 
 		ELSE
-
+			LOOP d$graphData
+				-->var d{$iteratorPosition} = [
+					[ {$Facility}, {$Priority} ]<!--
+				IF $iteratorPosition < $$graphData -1
+					-->,<!--
+				END:IF
+				--> ];
+				<!--
+			END:LOOP
 		END:IF
 
 		IF d$labels
