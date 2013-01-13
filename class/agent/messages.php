@@ -66,6 +66,19 @@ class agent_messages extends agent
 				$o->labels = new loop_sql($sql, array($this, 'filterLabel'));
 			}
 		}
+		else
+		{
+			$sql = "SELECT Facility, Priority, COUNT(`Priority`) AS total
+					FROM `SystemEvents`
+					WHERE `ReceivedAt` BETWEEN (DATE_SUB(NOW(), INTERVAL 1 DAY)) AND NOW()
+					GROUP BY `Facility`
+					ORDER BY `Facility`";
+
+			$o->graphData = new loop_sql($sql, array($this, 'filterLabel'));
+			$o->labels    = new loop_sql($sql, array($this, 'filterLabel'));
+			$o->xlabel    = 'Facility';
+			$o->ylabel    = 'Priority';
+		}
 
 		return $o;
 	}
@@ -118,13 +131,18 @@ class agent_messages extends agent
 	{
 		if ('priority' === $this->get->__1__)
 		{
-			$o->labelString = syslogViewer::$severities[$o->labelNumeric]['severity'];
+			$o->labelString = syslogViewer::$severities[$o->labelNumeric]["{$this->get->__1__}"];
 			$o->labelColor  = syslogViewer::$severities[$o->labelNumeric]['color'];
 		}
 		elseif ('facility' === $this->get->__1__)
 		{
-			$o->labelString = syslogViewer::$facilities[$o->labelNumeric]['facility'];
-			$o->labelColor  = syslogViewer::$facilities[$o->labelNumeric]['color'];
+			$o->labelString = syslogViewer::$facilities[$o->labelNumeric]["{$this->get->__1__}"];
+		}
+		else
+		{
+			$o->severityLabel = syslogViewer::$severities[$o->Priority]['severity'];
+			$o->severityColor = syslogViewer::$severities[$o->Priority]['color'];
+			$o->facilityLabel = syslogViewer::$facilities[$o->Facility]['facility'];
 		}
 
 		return $o;

@@ -1,5 +1,6 @@
 <!-- AGENT 'header' title='Syslog Viewer for Patchwork' -->
-
+//TODO mesages => graph |: Priority   _: Facility 
+//TODO : http://jumflot.jumware.com/spider.html
 <div id="subfilters">
 <ul><!--
 LOOP d$severities
@@ -42,6 +43,7 @@ END:LOOP
 	<td><a href="{~}messages/{g$__0__}?start={$next}&amp;length={$length}">Next {$length} &gt;</a></td></tr>
 	</table>
 
+	{* Results *}
 	<table class="workers">
 	<thead>
 		<tr><!--
@@ -121,60 +123,65 @@ $(document).ready(function() {
 
 IF d$graphData
 
-	IF 'priority' == g$__1__ || 'facility' == g$__1__
+	IF 'priority' == g$__1__ || 'facility' == g$__1__ || !$g__1__
 
 		-->$('head').append('<script src="{~}js/jquery.flot.js"></scrip>');
 		$('head').append('<script src="{~}js/jquery.flot.time.js"></scrip>');
 		$('#graph-lines').css({'width': '860px', 'height' : '480px'});<!--
 
-		SET $_max   -->0<!-- END:SET
-		SET $_count -->0<!-- END:SET
+		IF 'priority' == g$__1__ || 'facility' == g$__1__
 
-		LOOP d$severities
-			SET $_data -->0<!-- END:SET
-			LOOP $$graphData
-				IF $$iteratorPosition == $data
-					SET $$_data -->1<!-- END:SET
+			SET $_max   -->0<!-- END:SET
+			SET $_count -->0<!-- END:SET
+
+			LOOP d$severities
+				SET $_data -->0<!-- END:SET
+
+				LOOP $$graphData
+					IF $$iteratorPosition == $data
+						SET $$_data -->1<!-- END:SET
+					END:IF
+				END:LOOP
+
+				IF $_data
+
+					SET $_iterator -->{$iteratorPosition}<!-- END:SET
+
+					-->var d{$iteratorPosition} = [ <!--
+
+					LOOP $$graphData
+						IF $$_iterator == $data
+							SET $$$_max -->{$$$_max+1}<!--    END:SET
+						END:IF
+					END:LOOP
+
+					LOOP $$graphData
+						IF $$_iterator == $data
+
+							SET $$$_count -->{$$$_count+1}<!-- END:SET
+
+							-->[ {$timestamped * 1000}, {$total} ]<!--
+
+							IF $$$_count < $$$_max
+								-->,<!--
+							END:IF
+						END:IF
+					END:LOOP
+					--> ];
+					<!--
 				END:IF
 			END:LOOP
 
-			IF $_data
+		ELSE
 
-				SET $_iterator -->{$iteratorPosition}<!-- END:SET
-
-				-->var d{$iteratorPosition} = [ <!--
-
-				LOOP $$graphData
-					IF $$_iterator == $data
-
-						SET $$$_max -->{$$$_max+1}<!--    END:SET
-
-					END:IF
-				END:LOOP
-
-				LOOP $$graphData
-					IF $$_iterator == $data
-
-						SET $$$_count -->{$$$_count+1}<!-- END:SET
-
-						-->[ {$timestamped * 1000}, {$total} ]<!--
-
-						IF $$$_count < $$$_max
-							-->,<!--
-						END:IF
-					END:IF
-				END:LOOP
-				--> ];
-				<!--
-			END:IF
-		END:LOOP
+		END:IF
 
 		IF d$labels
 
 			-->$.plot($("#graph-lines"), [ <!--
 
 			LOOP d$labels
-			-->{ label: {$labelString|js}, data: d{$labelNumeric}, highlightColor: {$labelNumeric} }<!--
+				-->{ label: {$labelString|js}, data: d{$labelNumeric}, highlightColor: {$labelNumeric} }<!--
 
 				IF $iteratorPosition < $$labels-1
 					-->,<!--
@@ -195,11 +202,10 @@ IF d$graphData
 					END:IF 
 				END:LOOP
 			--> ]
-		});<!--
+			});<!--
 
 		END:IF
 	END:IF
-
 END:IF
 -->
 
