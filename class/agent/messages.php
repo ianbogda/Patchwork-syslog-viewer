@@ -68,11 +68,15 @@ class agent_messages extends agent
 		}
 		else
 		{
-			$sql = "SELECT Facility, Priority, COUNT(`Priority`) AS total
+			$sql = "SELECT
+						Facility,
+						Priority,
+						COUNT(`Priority`) AS total,
+						`FromHost`
 					FROM `SystemEvents`
 					WHERE `ReceivedAt` BETWEEN (DATE_SUB(NOW(), INTERVAL 1 DAY)) AND NOW()
-					GROUP BY `Facility`
-					ORDER BY `Facility`";
+					GROUP BY `FromHost`, `Facility`, `Priority`
+					ORDER BY `FromHost`";
 
 			$o->graphData = new loop_sql($sql, array($this, 'filterLabel'));
 			$o->labels    = new loop_sql($sql, array($this, 'filterLabel'));
