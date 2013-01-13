@@ -3,9 +3,6 @@
 html { margin: 0 auto}
 body { background-color: white; color: #339; }
 
-/*a, a:link, a:visited { color: #7aa054; outline:none;}
-a:hover { text-decoration: none; color: #455138;}
-*/
 header {
 background-color: #F3F3F3;
 background-image: -moz-linear-gradient(#F9F9F9, #F3F3F3);
@@ -60,7 +57,7 @@ nav li b.linkLoop {border-bottom: 2px solid #D26911;}
 .Debug {background:white}
 
 #subfilters { position: absolute; top: 80px; left: 10% }
-#subfilters li { display: inline; listt-style: none; margin-right: 5px;}
+#subfilters li { display: inline; list-style: none; margin-right: 5px;}
 #subfilters li a, #subfilters li b.linkLoop {
 	display: inline-block;
 	width: 60px;
@@ -69,7 +66,11 @@ nav li b.linkLoop {border-bottom: 2px solid #D26911;}
 	-webkit-border-radius: 15px;
 	border-radius: 15px;
 }
-#refresh {position: absolute; top: 80px; right: 10% }
+
+#facilities {position: absolute; top: 80px; right: 10% }
+#facilities li {display:inline; width: 80px; list-style:none}
+#facilities li a {display:inline-block; width: 80px}
+
 table th { font-size: 13px; font-weight: normal; background: #B9C9FE; border-top: 4px solid #AABCFE; border-bottom: 1px solid white; color: #039; padding: 8px; }
 table tr:hover {background: #D0DAFD; color: #339;}
 table td {border-bottom: 1px solid white;border-top: 1px solid transparent; padding: 8px;}

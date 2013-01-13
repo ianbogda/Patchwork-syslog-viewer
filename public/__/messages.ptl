@@ -16,7 +16,16 @@ END:LOOP
 </div>
 
 <div id="facilities">
-	<input id="refresh" type="button" value="Refresh" />
+	<ul><!--
+
+		IF d$graphData
+
+			--><li><a href="#graph-wrapper">Graph</a></li><!--
+
+		END:IF
+
+		--><li><input id="refresh" type="button" value="Refresh" /></li>
+	</ul>
 </div>
 
 <div id="content">
@@ -73,17 +82,26 @@ END:LOOP
 	</tbody>
 	</table>
 
-	<div id="graph-wrapper">
-		<div class="graph-info">
-		</div>
-
-		<div class="graph-container">
-			<div id="graph-lines"></div>
-			<div id="graph-bar"></div>
-		</div>
-
-	</div>
 </div>
+
+<!--
+
+IF d$graphData
+
+--><div id="graph-wrapper">
+	<div class="graph-info">
+		<a href="#content">Top</a>
+	</div>
+
+	<div class="graph-container">
+		<div id="graph-lines"></div>
+		<div id="graph-bar"></div>
+	</div>
+</div><!--
+
+END:IF
+
+-->
 <script>
 $(document).ready(function() {
 	$('#refresh').click(function() {
@@ -91,79 +109,86 @@ $(document).ready(function() {
 	});
 
 <!--
+
 IF d$graphData
 
 	IF 'priority' == g$__1__ || 'facility' == g$__1__
 
-	-->
+		-->$('head').append('<script src="{~}js/jquery.flot.js"></scrip>');
+		$('head').append('<script src="{~}js/jquery.flot.time.js"></scrip>');
+		$('#graph-lines').css({'width': '860px', 'height' : '480px'});<!--
 
-	$('head').append('<script src="{~}js/jquery.flot.js"></scrip>');
-	$('head').append('<script src="{~}js/jquery.flot.time.js"></scrip>');
-	$('#graph-lines').css({'width': '860px', 'height' : '480px'});
+		SET $_max   -->0<!-- END:SET
+		SET $_count -->0<!-- END:SET
 
-	<!--
-	SET $_max   -->0<!-- END:SET
-	SET $_count -->0<!-- END:SET
-
-	LOOP d$severities
-		SET $_data -->0<!-- END:SET
-		LOOP $$graphData
-			IF $$iteratorPosition == $data
-				SET $$_data -->1<!-- END:SET
-			END:IF
-		END:LOOP
-
-		IF $_data
-			-->var d{$iteratorPosition} = [ <!--
-			SET $_iterator -->{$iteratorPosition}<!-- END:SET
-
+		LOOP d$severities
+			SET $_data -->0<!-- END:SET
 			LOOP $$graphData
-				IF $$_iterator == $data
-					SET $$$_max -->{$$$_max+1}<!--    END:SET
+				IF $$iteratorPosition == $data
+					SET $$_data -->1<!-- END:SET
 				END:IF
 			END:LOOP
 
-			LOOP $$graphData
-				IF $$_iterator == $data
-					-->[ {$timestamped * 1000}, {$total} ]<!--
-					SET $$$_count -->{$$$_count+1}<!-- END:SET
-					IF $$$_count < $$$_max
-						-->,<!--
+			IF $_data
+
+				SET $_iterator -->{$iteratorPosition}<!-- END:SET
+
+				-->var d{$iteratorPosition} = [ <!--
+
+				LOOP $$graphData
+					IF $$_iterator == $data
+
+						SET $$$_max -->{$$$_max+1}<!--    END:SET
+
 					END:IF
-				END:IF
-			END:LOOP
-			--> ];
-			<!--
-		END:IF
-	END:LOOP
+				END:LOOP
 
-	IF d$labels
+				LOOP $$graphData
+					IF $$_iterator == $data
 
-	-->
-	$.plot($("#graph-lines"), [ <!--
-		LOOP d$labels
-		-->{ label: {$labelString|js}, data: d{$labelNumeric}, highlightColor: {$labelNumeric} }<!--
-			IF $iteratorPosition < $$labels-1
-				-->,<!--
+						SET $$$_count -->{$$$_count+1}<!-- END:SET
+
+						-->[ {$timestamped * 1000}, {$total} ]<!--
+
+						IF $$$_count < $$$_max
+							-->,<!--
+						END:IF
+					END:IF
+				END:LOOP
+				--> ];
+				<!--
 			END:IF
 		END:LOOP
-		--> ], {
-		series: {
-			lines: { show: true},
-			points: { show: true}
-		},
-		xaxis: { mode : "time" },
-		colors: [ <!--
+
+		IF d$labels
+
+			-->$.plot($("#graph-lines"), [ <!--
+
 			LOOP d$labels
-				-->{$labelColor|js}<!--
+			-->{ label: {$labelString|js}, data: d{$labelNumeric}, highlightColor: {$labelNumeric} }<!--
+
 				IF $iteratorPosition < $$labels-1
 					-->,<!--
-				END:IF 
+				END:IF
 			END:LOOP
-		--> ]
-	});<!--
+			--> ], {
+			series: {
+				lines: { show: true},
+				points: { show: true}
+			},
+			xaxis: { mode : "time", timeformat: "%Y/%m/%d" },
+			colors: [ <!--
+				LOOP d$labels
+					-->{$labelColor|js}<!--
 
-	END:IF
+					IF $iteratorPosition < $$labels-1
+						-->,<!--
+					END:IF 
+				END:LOOP
+			--> ]
+		});<!--
+
+		END:IF
 	END:IF
 
 END:IF
@@ -171,4 +196,5 @@ END:IF
 
 });
 </script>
+
 <!-- AGENT 'footer' -->
