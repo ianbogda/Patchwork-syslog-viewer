@@ -1,3 +1,0 @@
-[submodule "public/__/js"]
-	path = public/__/js
-	url = https://github.com/flot/flot.git
