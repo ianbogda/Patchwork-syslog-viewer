@@ -125,8 +125,8 @@ IF d$graphData
 
 	IF 'priority' == g$__1__ || 'facility' == g$__1__ || !$g__1__
 
-		-->$('head').append('<script src="{~}js/jquery.flot.js"></scrip>');
-		$('head').append('<script src="{~}js/jquery.flot.time.js"></scrip>');
+		-->$('head').append('<script src="{~}js/flot/jquery.flot.js"></scrip>');
+		$('head').append('<script src="{~}js/flot/jquery.flot.time.js"></scrip>');
 		$('#graph-lines').css({'width': '860px', 'height' : '480px'});<!--
 
 		IF 'priority' == g$__1__ || 'facility' == g$__1__
