@@ -103,7 +103,7 @@ class agent_messages extends agent
 
 		if (-1 != $value)
 		{
-			$sql = $this->getSqlColumn($field) . ('input' === $field ? " LIKE %s%" : " = %s");
+			$sql = $this->getSqlColumn($field) . ('input' === $field ? " LIKE '%s%'" : " = '%s'");
 			$this->sqlWhere = str_replace('%s', $value, $sql);
 		}
 		else
