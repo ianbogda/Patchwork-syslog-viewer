@@ -76,4 +76,7 @@ table tr:hover {background: #D0DAFD; color: #339;}
 table td {border-bottom: 1px solid white;border-top: 1px solid transparent; padding: 8px;}
 a, table {color: #333}
 
+#graph-container .odd  { float: left;}
+#graph-container .even { float: right;}
+
 #graph-lines { margin:0 auto;}
