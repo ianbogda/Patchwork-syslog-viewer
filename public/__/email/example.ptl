@@ -1,0 +1,37 @@
+﻿<!--
+
+AGENT 'email/header' title='Syslog viewer Example Report Layout' email='eg@example.com'
+
+
+	SET a$title  -->Only Text<!--END:SET
+	SET a$description
+		-->Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<!--
+	END:SET
+
+INLINE email/layout/onlyText
+
+	SET a$title  -->Floating img on left<!--     END:SET
+	SET a$imgSrc -->{~}email/img/email.png<!-- END:SET
+	SET a$description
+		-->Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<!--
+	END:SET
+INLINE email/layout/imgLeftText
+
+	SET a$title  -->Floating img on right<!--END:SET
+	SET a$imgSrc -->{~}email/img/email.png<!-- END:SET
+	SET a$description
+		-->Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<!--
+	END:SET
+INLINE email/layout/imgRightText
+
+	SET a$title  -->Image Full + text<!--END:SET
+	SET a$imgSrc -->{~}email/img/email.png<!-- END:SET
+	SET a$description
+		-->Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<!--
+	END:SET
+INLINE email/layout/imgFullText
+
+
+AGENT 'email/footer' email='eg@example.com'
+
+-->
