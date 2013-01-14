@@ -101,7 +101,7 @@ IF d$graphData
 -->{* graph *}
 <div id="graph-wrapper">
 	<div class="graph-info">
-		<a href="#content">Top</a>
+		<a href="#header">Top</a>
 	</div>
 
 	<div class="graph-container">
