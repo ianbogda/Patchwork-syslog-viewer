@@ -135,7 +135,7 @@ class agent_messages extends agent
 	{
 		if ('priority' === $this->get->__1__)
 		{
-			$o->labelString = syslogViewer::$severities[$o->labelNumeric]["{$this->get->__1__}"];
+			$o->labelString = syslogViewer::$severities[$o->labelNumeric]['severity'];
 			$o->labelColor  = syslogViewer::$severities[$o->labelNumeric]['color'];
 		}
 		elseif ('facility' === $this->get->__1__)
