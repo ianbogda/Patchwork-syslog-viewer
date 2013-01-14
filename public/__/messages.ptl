@@ -98,7 +98,8 @@ END:LOOP
 
 IF d$graphData
 
---><div id="graph-wrapper">
+-->{* graph *}
+<div id="graph-wrapper">
 	<div class="graph-info">
 		<a href="#content">Top</a>
 	</div>
@@ -199,6 +200,7 @@ IF d$graphData
 				lines: { show: true},
 				points: { show: true}
 			},
+			grid: { hoverable: true },
 			xaxis: { mode : "time", timeformat: "%Y/%m/%d" },
 			colors: [ <!--
 				LOOP d$labels
@@ -209,7 +211,43 @@ IF d$graphData
 					END:IF 
 				END:LOOP
 			--> ]
-			});<!--
+			});
+
+
+			function showTooltip(x, y, contents) {
+				$('<div id="tooltip">' + contents + '</div>').css( {
+					position: 'absolute',
+					display: 'none',
+					top: y + 5,
+					left: x + 5,
+					border: '1px solid #fdd',
+					padding: '2px',
+					'background-color': '#fee',
+					opacity: 0.80
+				}).appendTo("body").fadeIn(200);
+ 			}
+
+			var previousPoint = null;
+			$("#graph-lines").bind("plothover", function (event, pos, item) {
+				if (item) {
+					if (previousPoint != item.dataIndex) {
+						previousPoint = item.dataIndex;
+
+						$("#tooltip").remove();
+						var y = item.datapoint[1].toFixed(0);
+
+						showTooltip(
+							item.pageX, item.pageY,
+							item.series.label + " : " +  y
+						);
+					}
+				}
+				else {
+					previousPoint = null;
+				}
+			});
+
+			<!--
 
 		END:IF
 	END:IF
